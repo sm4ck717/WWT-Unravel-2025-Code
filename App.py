@@ -8,6 +8,21 @@ import streamlit as st
 # from sklearn.metrics.pairwise import cosine_similarity
 import joblib
 import google.generativeai as genai
+import gdown
+
+# Direct Google Drive download links
+GUEST_CSV_URL = "https://drive.google.com/uc?export=download&id=1uB2Fzzz4-Hu1GO1n0pfuMjN1iORL1KZz"
+LOYAL_CSV_URL = "https://drive.google.com/uc?export=download&id=1-IYcACfShaVzVOsQNFUaeejrL_uLcV7L"
+
+def download_if_missing():
+    """Download CSVs from Google Drive if not present locally."""
+    if not os.path.exists("guest_customer_data.csv"):
+        print("Downloading guest_customer_data.csv...")
+        gdown.download(GUEST_CSV_URL, "guest_customer_data.csv", quiet=False)
+
+    if not os.path.exists("loyal_customer_data.csv"):
+        print("Downloading loyal_customer_data.csv...")
+        gdown.download(LOYAL_CSV_URL, "loyal_customer_data.csv", quiet=False)
 
 load_dotenv()
 genai.configure(api_key=os.getenv("API_KEY"))
@@ -39,6 +54,9 @@ def load_and_prepare_data():
     """
     # NOTE: You must create these smaller CSV files first.
     # See instructions on how to create 'loyal_customer_data.csv' and 'guest_customer_data.csv'.
+
+    download_if_missing()  # Ensure CSVs are available
+    
     try:
         df_loyal = pd.read_csv('loyal_customer_data.csv')
         df_guest = pd.read_csv('guest_customer_data.csv')
