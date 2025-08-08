@@ -10,6 +10,9 @@ import joblib
 import google.generativeai as genai
 import gdown
 
+load_dotenv()
+genai.configure(api_key=os.getenv("API_KEY"))
+
 # Direct Google Drive download links
 GUEST_CSV_URL = "https://drive.google.com/uc?export=download&id=1uB2Fzzz4-Hu1GO1n0pfuMjN1iORL1KZz"
 LOYAL_CSV_URL = "https://drive.google.com/uc?export=download&id=1-IYcACfShaVzVOsQNFUaeejrL_uLcV7L"
@@ -23,9 +26,6 @@ def download_if_missing():
     if not os.path.exists("loyal_customer_data.csv"):
         print("Downloading loyal_customer_data.csv...")
         gdown.download(LOYAL_CSV_URL, "loyal_customer_data.csv", quiet=False)
-
-load_dotenv()
-genai.configure(api_key=os.getenv("API_KEY"))
 
 def generate_recommendation_justification(cart_items, recommendations):
     prompt = f"""
@@ -48,23 +48,15 @@ Keep the explanation short and easy to understand (2-3 sentences).
 # This section is now more memory-efficient by loading pre-processed data.
 @st.cache_data
 def load_and_prepare_data():
-    """
-    Loads pre-processed datasets and prepares lists for the UI.
-    This is much more memory-efficient as it avoids loading the entire raw dataset.
-    """
-    # NOTE: You must create these smaller CSV files first.
-    # See instructions on how to create 'loyal_customer_data.csv' and 'guest_customer_data.csv'.
-
-    download_if_missing()  # Ensure CSVs are available
-    
+    """Load pre-processed datasets, download from Drive if missing."""
+    download_if_missing()
     try:
         df_loyal = pd.read_csv('loyal_customer_data.csv')
         df_guest = pd.read_csv('guest_customer_data.csv')
     except FileNotFoundError:
-        st.error("Error: Make sure 'loyal_customer_data.csv' and 'guest_customer_data.csv' are in the same directory.")
+        st.error("Error: Unable to load customer CSVs.")
         return None, None, [], []
 
-    # Get unique lists for UI selectors from both datasets
     all_items = sorted(pd.concat([df_loyal['item_name'], df_guest['item_name']]).unique())
     all_stores = sorted(pd.concat([df_loyal['STORE_NUMBER'], df_guest['STORE_NUMBER']]).unique())
     
