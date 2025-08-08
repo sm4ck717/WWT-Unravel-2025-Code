@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import pandas as pd
 import streamlit as st
 # from mlxtend.preprocessing import TransactionEncoder
@@ -7,7 +9,8 @@ import streamlit as st
 import joblib
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyAeujvQOTEbBJWkNWdL-bZ4TRUCNhUqKVA")
+load_dotenv()
+genai.configure(api_key=os.getenv("API_KEY"))
 
 def generate_recommendation_justification(cart_items, recommendations):
     prompt = f"""
