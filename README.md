@@ -7,6 +7,12 @@ The solution involves a **hybrid, context-aware recommendation engine** that pro
 
 ---
 
+## 🌍 Live Resources
+- **Streamlit App** → [Wings R Us Recommender System](https://green-analysts-wings-r-us-recommender-system.streamlit.app/)
+- **Power BI Dashboard** → [Download WWT_dashboard.pbix](./WWT_dashboard.pbix) *(Requires Power BI Desktop)*
+
+---
+
 ## 📂 File Structure
 
 | File | Description |
